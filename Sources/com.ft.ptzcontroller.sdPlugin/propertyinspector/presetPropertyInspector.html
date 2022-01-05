@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name=viewport
+    content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+  <meta name=apple-mobile-web-app-capable content=yes>
+  <meta name=apple-mobile-web-app-status-bar-style content=black>
+  <title>com.ft.ptzcontroller Property Inspector</title>
+  <link rel="stylesheet" href="css/sdpi.css">
+</head>
+
+<body>
+  <div class="sdpi-wrapper">
+
+    <div class="sdpi-item" id="select_single">
+      <div class="sdpi-item-label">Select</div>
+      <select class="sdpi-item-value select inspector" id="presetid">
+        <option value=0>0</option>
+        <option value=1>1</option>
+        <option value=2>2</option>
+        <option value=3>3</option>
+        <option value=4>4</option>
+        <option value=5>5</option>
+        <option value=6>6</option>
+        <option value=7>7</option>
+        <option value=8>8</option>
+        <option value=9>9</option>
+      </select>
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Camera IP</div>
+      <input id="camip" class="sdpi-item-value inspector" type="text" value="http://192.168.0.123" />
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Auth (User)</div>
+      <input id="authuser" class="sdpi-item-value inspector" type="text" value="YWRtaW4=" />
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Auth (Password)</div>
+      <input id="authpass" class="sdpi-item-value inspector" type="text" value="YWRtaW4=" />
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Save information</div>
+      <button class="sdpi-item-value" id="save" data-localize="Save" onclick="save()">Save</button>
+    </div>
+
+  </div>
+
+  <div class="sdpi-info-label hidden" style="top: -1000;" value=""></div>
+  <script src="js/common.js"></script>
+  <script src="js/common_pi.js"></script>
+  <script src="js/index_pi_preset.js"></script>
+</body>
+
+</html>

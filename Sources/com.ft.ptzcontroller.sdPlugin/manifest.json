@@ -23,6 +23,18 @@
       "PropertyInspectorPath": "propertyinspector/zoomPropertyInspector.html",
       "Tooltip": "Control zoom on camera", 
       "UUID": "com.ft.ptzcontroller.action.zoom"
+    },
+    {
+      "Icon": "action/images/actionimage", 
+      "Name": "Preset", 
+      "States": [
+        {
+          "Image": "action/images/action"
+        }
+      ], 
+      "PropertyInspectorPath": "propertyinspector/presetPropertyInspector.html",
+      "Tooltip": "Call preset with id", 
+      "UUID": "com.ft.ptzcontroller.action.preset"
     }
   ], 
   "SDKVersion": 2,
@@ -30,7 +42,7 @@
   "Category": "PTZ Controller",
   "CodePath": "index.html", 
   "PropertyInspectorPath": "propertyinspector/index.html", 
-  "Description": "Example description", 
+  "Description": "Control yout PTZ camera", 
   "Name": "PTZ Controller", 
   "Icon": "action/images/action", 
   "URL": "https://www.elgato.com/en/gaming/stream-deck", 
