@@ -22,19 +22,17 @@
     <div class="sdpi-item" id="select_single">
       <div class="sdpi-item-label">Select</div>
       <select class="sdpi-item-value select inspector" id="moviment">
-        <option value="Up">UP</option>
-        <option value="Down">DOWN</option>
-        <option value="Left">LEFT</option>
-        <option value="Right">RIGHT</option>
+        <option value="ZoomWide">IN</option>
+        <option value="ZoomTele">OUT</option>
       </select>
     </div>
 
     <div type="range" class="sdpi-item">
       <div class="sdpi-item-label">Speed</div>
       <div class="sdpi-item-value">
-        <span class="clickable" value=0>0</span>
-        <input class="floating-tooltip inspector" id="speed" data-suffix="" type="range" min="1" max="100" value=100>
-        <span class="clickable" value="100">100</span>
+        <span class="clickable" value=1>1</span>
+        <input class="floating-tooltip inspector" id="speed" data-suffix="" type="range" min="1" max="10" value=100>
+        <span class="clickable" value="10">10</span>
       </div>
     </div>
 
@@ -58,7 +56,7 @@
   <div class="sdpi-info-label hidden" style="top: -1000;" value=""></div>
   <script src="js/common.js"></script>
   <script src="js/common_pi.js"></script>
-  <script src="js/index_pi.js"></script>
+  <script src="js/index_pi_zoom.js"></script>
 </body>
 
 </html>

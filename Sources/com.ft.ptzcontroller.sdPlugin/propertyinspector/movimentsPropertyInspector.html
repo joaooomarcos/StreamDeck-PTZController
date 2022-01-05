@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name=viewport
+    content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+  <meta name=apple-mobile-web-app-capable content=yes>
+  <meta name=apple-mobile-web-app-status-bar-style content=black>
+  <title>com.ft.ptzcontroller Property Inspector</title>
+  <link rel="stylesheet" href="css/sdpi.css">
+</head>
+
+<body>
+  <div class="sdpi-wrapper">
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Camera IP</div>
+      <input id="camip" class="sdpi-item-value inspector" type="text" value="http://192.168.0.123" />
+    </div>
+
+    <div class="sdpi-item" id="select_single">
+      <div class="sdpi-item-label">Select</div>
+      <select class="sdpi-item-value select inspector" id="moviment">
+        <option value="Up">UP</option>
+        <option value="Down">DOWN</option>
+        <option value="Left">LEFT</option>
+        <option value="Right">RIGHT</option>
+      </select>
+    </div>
+
+    <div type="range" class="sdpi-item">
+      <div class="sdpi-item-label">Speed</div>
+      <div class="sdpi-item-value">
+        <span class="clickable" value=0>0</span>
+        <input class="floating-tooltip inspector" id="speed" data-suffix="" type="range" min="1" max="100" value=100>
+        <span class="clickable" value="100">100</span>
+      </div>
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Auth (User)</div>
+      <input id="authuser" class="sdpi-item-value inspector" type="text" value="YWRtaW4=" />
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Auth (Password)</div>
+      <input id="authpass" class="sdpi-item-value inspector" type="text" value="YWRtaW4=" />
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Save information</div>
+      <button class="sdpi-item-value" id="save" data-localize="Save" onclick="save()">Save</button>
+    </div>
+
+  </div>
+
+  <div class="sdpi-info-label hidden" style="top: -1000;" value=""></div>
+  <script src="js/common.js"></script>
+  <script src="js/common_pi.js"></script>
+  <script src="js/index_pi_moviments.js"></script>
+</body>
+
+</html>

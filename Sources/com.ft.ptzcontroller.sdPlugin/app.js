@@ -2,25 +2,28 @@ $SD.on('connected', (jsonObj) => connected(jsonObj));
 
 function connected(jsn) {
     // Subscribe to the willAppear and other events
-    $SD.on('com.ft.ptzcontroller.action.willAppear', (jsonObj) => action.onWillAppear(jsonObj));
-    $SD.on('com.ft.ptzcontroller.action.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
-    $SD.on('com.ft.ptzcontroller.action.sendToPlugin', (jsonObj) => action.onSendToPlugin(jsonObj));
-    $SD.on('com.ft.ptzcontroller.action.didReceiveSettings', (jsonObj) => action.onDidReceiveSettings(jsonObj));
-    $SD.on('com.ft.ptzcontroller.action.propertyInspectorDidAppear', (jsonObj) => {
+    $SD.on('com.ft.ptzcontroller.action.moviments.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.moviments.keyDown', (jsonObj) => action.onKeyDown(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.moviments.sendToPlugin', (jsonObj) => action.onSendToPlugin(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.moviments.propertyInspectorDidAppear', (jsonObj) => {
         console.log('%c%s', 'color: white; background: black; font-size: 13px;', '[app.js]propertyInspectorDidAppear:');
     });
-    $SD.on('com.ft.ptzcontroller.action.propertyInspectorDidDisappear', (jsonObj) => {
+    $SD.on('com.ft.ptzcontroller.action.moviments.propertyInspectorDidDisappear', (jsonObj) => {
         console.log('%c%s', 'color: white; background: red; font-size: 13px;', '[app.js]propertyInspectorDidDisappear:');
     });
-    $SD.on('com.ft.ptzcontroller.action.keyDown', (jsonObj) => action.onKeyDown(jsonObj));
 
+    $SD.on('com.ft.ptzcontroller.action.zoom.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.zoom.keyDown', (jsonObj) => action.onKeyDown(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.zoom.sendToPlugin', (jsonObj) => action.onSendToPlugin(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.zoom.propertyInspectorDidAppear', (jsonObj) => {
+        console.log('%c%s', 'color: white; background: black; font-size: 13px;', '[app.js]propertyInspectorDidAppear:');
+    });
+    $SD.on('com.ft.ptzcontroller.action.zoom.propertyInspectorDidDisappear', (jsonObj) => {
+        console.log('%c%s', 'color: white; background: red; font-size: 13px;', '[app.js]propertyInspectorDidDisappear:');
+    });
 };
 
 const action = {
-    onWillAppear: function (jsn) {
-        console.log(`[onWillAppear] ${JSON.stringify(jsn)}`);
-    },
-
     onKeyUp: function (jsn) {
         console.log(`[onKeyUp] ${JSON.stringify(jsn)}`);
 

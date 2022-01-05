@@ -2,18 +2,32 @@
   "Actions": [
     {
       "Icon": "action/images/actionimage", 
-      "Name": "Example Action", 
+      "Name": "Moviments", 
       "States": [
         {
           "Image": "action/images/action"
         }
       ], 
-      "Tooltip": "This is an example tooltip", 
-      "UUID": "com.ft.ptzcontroller.action"
+      "PropertyInspectorPath": "propertyinspector/movimentsPropertyInspector.html",
+      "Tooltip": "Control moviments on camera", 
+      "UUID": "com.ft.ptzcontroller.action.moviments"
+    },
+    {
+      "Icon": "action/images/actionimage", 
+      "Name": "Zoom", 
+      "States": [
+        {
+          "Image": "action/images/action"
+        }
+      ], 
+      "PropertyInspectorPath": "propertyinspector/zoomPropertyInspector.html",
+      "Tooltip": "Control zoom on camera", 
+      "UUID": "com.ft.ptzcontroller.action.zoom"
     }
   ], 
   "SDKVersion": 2,
-  "Author": "Elgato", 
+  "Author": "Joao Marcos", 
+  "Category": "PTZ Controller",
   "CodePath": "index.html", 
   "PropertyInspectorPath": "propertyinspector/index.html", 
   "Description": "Example description", 
