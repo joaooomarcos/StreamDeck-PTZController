@@ -1,5 +1,22 @@
 $SD.on('connected', (jsonObj) => connected(jsonObj));
 
+function loadImageAsDataUri(url, callback) {
+    var image = new Image();
+
+    image.onload = function () {
+        var canvas = document.createElement("canvas");
+
+        canvas.width = this.naturalWidth;
+        canvas.height = this.naturalHeight;
+
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(this, 0, 0);
+        callback(canvas.toDataURL("image/png"));
+    };
+
+    image.src = url;
+};
+
 function connected(jsn) {
     // Subscribe to the willAppear and other events
     $SD.on('com.ft.ptzcontroller.action.moviments.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
@@ -97,9 +114,19 @@ const action = {
 
     onSendToPlugin: function (jsn) {
         console.log(`[onSendToPlugin] ${JSON.stringify(jsn)}`);
-
+        
         if(jsn.payload) {
             $SD.api.setSettings(jsn.context, jsn.payload);
+            let moviment = jsn.payload.moviment;
+
+            if (moviment) {
+                const imageName = `action/images/moviment-${moviment}`;
+                loadImageAsDataUri(`${imageName}.png`, function (imgUrl) {
+                    console.log(`[CONTEXT] ${jsn.context}`)
+                    console.log(`[IMAGE] ${imgUrl}`)
+                    $SD.api.setImage(jsn.context, imgUrl, 0)
+                })
+            }
         }
     },
 
@@ -134,4 +161,3 @@ const action = {
         });
     },
 };
-

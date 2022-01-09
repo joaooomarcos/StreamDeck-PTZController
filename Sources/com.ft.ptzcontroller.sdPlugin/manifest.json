@@ -1,11 +1,11 @@
 {
   "Actions": [
     {
-      "Icon": "action/images/actionimage", 
+      "Icon": "action/images/actionMoviment", 
       "Name": "Moviments", 
       "States": [
         {
-          "Image": "action/images/action"
+          "Image": "action/images/moviment-Default"
         }
       ], 
       "PropertyInspectorPath": "propertyinspector/movimentsPropertyInspector.html",
@@ -13,11 +13,11 @@
       "UUID": "com.ft.ptzcontroller.action.moviments"
     },
     {
-      "Icon": "action/images/actionimage", 
+      "Icon": "action/images/actionZoom", 
       "Name": "Zoom", 
       "States": [
         {
-          "Image": "action/images/action"
+          "Image": "action/images/moviment-Default"
         }
       ], 
       "PropertyInspectorPath": "propertyinspector/zoomPropertyInspector.html",
@@ -25,11 +25,11 @@
       "UUID": "com.ft.ptzcontroller.action.zoom"
     },
     {
-      "Icon": "action/images/actionimage", 
+      "Icon": "action/images/actionPreset", 
       "Name": "Preset", 
       "States": [
         {
-          "Image": "action/images/action"
+          "Image": "action/images/moviment-Default"
         }
       ], 
       "PropertyInspectorPath": "propertyinspector/presetPropertyInspector.html",
@@ -40,11 +40,12 @@
   "SDKVersion": 2,
   "Author": "Joao Marcos", 
   "Category": "PTZ Controller",
+  "CategoryIcon": "action/images/categoryImage",
   "CodePath": "index.html", 
   "PropertyInspectorPath": "propertyinspector/index.html", 
   "Description": "Control yout PTZ camera", 
   "Name": "PTZ Controller", 
-  "Icon": "action/images/action", 
+  "Icon": "action/images/moviment-Default", 
   "URL": "https://www.elgato.com/en/gaming/stream-deck", 
   "Version": "1.0.1",
   "OS": [
