@@ -104,6 +104,10 @@ function connected(jsn) {
     $SD.on('com.ft.ptzcontroller.action.preset.keyDown',    (jsonObj) => action.onPresetKeyDown(jsonObj));
     $SD.on('com.ft.ptzcontroller.action.preset.keyUp',      (jsonObj) => action.onPresetKeyUp(jsonObj));
     $SD.on('com.ft.ptzcontroller.action.preset.sendToPlugin',(jsonObj) => action.onSendToPlugin(jsonObj));
+
+    $SD.on('com.ft.ptzcontroller.action.speed.keyDown',     (jsonObj) => action.onSpeedKeyDown(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.speed.sendToPlugin',(jsonObj) => action.onSpeedSendToPlugin(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.speed.willAppear',  (jsonObj) => action.onSpeedWillAppear(jsonObj));
 }
 
 const action = {
@@ -178,6 +182,43 @@ const action = {
                 });
             }
         }
+    },
+
+    onSpeedWillAppear: function (jsn) {
+        $SD.api.getGlobalSettings($SD.uuid);
+        const direction = jsn.payload && jsn.payload.settings && jsn.payload.settings.direction;
+        const img = direction === '-' ? 'minus' : 'plus';
+        loadImageAsDataUri(`action/images/${img}.png`, function (imgUrl) {
+            $SD.api.setImage(jsn.context, imgUrl, 0);
+        });
+    },
+
+    onSpeedSendToPlugin: function (jsn) {
+        if (jsn.payload) {
+            $SD.api.setSettings(jsn.context, jsn.payload);
+            const img = jsn.payload.direction === '-' ? 'minus' : 'plus';
+            loadImageAsDataUri(`action/images/${img}.png`, function (imgUrl) {
+                $SD.api.setImage(jsn.context, imgUrl, 0);
+            });
+        }
+    },
+
+    onSpeedKeyDown: function (jsn) {
+        const info = jsn.payload.settings;
+        if (!info) { $SD.api.showAlert(jsn.context); return; }
+        const camid = info.camid || 'CAM1';
+        const step = parseInt(info.step) || 5;
+        const delta = info.direction === '-' ? -step : step;
+        const cam = globalSettings[camid] || {};
+
+        const curMoviment = cam.speedMoviment !== undefined ? cam.speedMoviment : 40;
+        const curZoom     = cam.speedZoom     !== undefined ? cam.speedZoom     : 5;
+
+        globalSettings[camid] = Object.assign({}, cam, {
+            speedMoviment: Math.max(0, Math.min(63, curMoviment + delta)),
+        });
+        $SD.api.setGlobalSettings($SD.uuid, globalSettings);
+        $SD.api.showOk(jsn.context);
     },
 
     onPresetKeyDown: function (jsn) {

@@ -1,7 +1,7 @@
 {
   "Actions": [
     {
-      "Icon": "action/images/config",
+      "Icon": "action/images/actionConfig",
       "Name": "PTZ Config",
       "States": [
         {
@@ -11,6 +11,18 @@
       "PropertyInspectorPath": "propertyinspector/settingsPropertyInspector.html",
       "Tooltip": "Global settings: speed and authentication",
       "UUID": "com.ft.ptzcontroller.action.config"
+    },
+    {
+      "Icon": "action/images/actionSpeed",
+      "Name": "PTZ Speed",
+      "States": [
+        {
+          "Image": "action/images/plus"
+        }
+      ],
+      "PropertyInspectorPath": "propertyinspector/speedPropertyInspector.html",
+      "Tooltip": "Adjust camera movement and zoom speed",
+      "UUID": "com.ft.ptzcontroller.action.speed"
     },
     {
       "Icon": "action/images/actionMoviment",
