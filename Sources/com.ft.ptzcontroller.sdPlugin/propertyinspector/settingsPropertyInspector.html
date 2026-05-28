@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name=viewport
+    content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+  <meta name=apple-mobile-web-app-capable content=yes>
+  <meta name=apple-mobile-web-app-status-bar-style content=black>
+  <title>PTZ Config</title>
+  <link rel="stylesheet" href="css/sdpi.css">
+</head>
+
+<body>
+  <div class="sdpi-wrapper">
+
+    <div class="sdpi-item" id="select_single">
+      <div class="sdpi-item-label">Camera</div>
+      <select class="sdpi-item-value select" id="camid" onchange="onCamChange()">
+        <option value="CAM1">CAM 1</option>
+        <option value="CAM2">CAM 2</option>
+        <option value="CAM3">CAM 3</option>
+        <option value="CAM4">CAM 4</option>
+        <option value="CAM5">CAM 5</option>
+      </select>
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Camera IP</div>
+      <input id="camip" class="sdpi-item-value" type="text" value="http://192.168.0.123" />
+    </div>
+
+    <div type="range" class="sdpi-item">
+      <div class="sdpi-item-label">Movement Speed</div>
+      <div class="sdpi-item-value">
+        <span class="clickable" value=0>0</span>
+        <input class="floating-tooltip" id="speedMoviment" data-suffix="" type="range" min="0" max="63" value="40">
+        <span class="clickable" value="63">63</span>
+      </div>
+    </div>
+
+    <div type="range" class="sdpi-item">
+      <div class="sdpi-item-label">Zoom Speed</div>
+      <div class="sdpi-item-value">
+        <span class="clickable" value=0>0</span>
+        <input class="floating-tooltip" id="speedZoom" data-suffix="" type="range" min="0" max="7" value="5">
+        <span class="clickable" value="7">7</span>
+      </div>
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Auth (User)</div>
+      <input id="authuser" class="sdpi-item-value" type="text" value="YWRtaW4=" />
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Auth (Password)</div>
+      <input id="authpass" class="sdpi-item-value" type="text" value="YWRtaW4=" />
+    </div>
+
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Save</div>
+      <button class="sdpi-item-value" onclick="save()">Save</button>
+    </div>
+
+  </div>
+
+  <div class="sdpi-info-label hidden" style="top: -1000;" value=""></div>
+  <script src="js/common.js"></script>
+  <script src="js/common_pi.js"></script>
+  <script src="js/index_pi_settings.js"></script>
+</body>
+
+</html>

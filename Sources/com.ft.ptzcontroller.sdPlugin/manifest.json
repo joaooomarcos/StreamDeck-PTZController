@@ -1,7 +1,19 @@
 {
   "Actions": [
     {
-      "Icon": "action/images/actionMoviment", 
+      "Icon": "action/images/categoryImage",
+      "Name": "PTZ Config",
+      "States": [
+        {
+          "Image": "action/images/moviment-Default"
+        }
+      ],
+      "PropertyInspectorPath": "propertyinspector/settingsPropertyInspector.html",
+      "Tooltip": "Global settings: speed and authentication",
+      "UUID": "com.ft.ptzcontroller.action.config"
+    },
+    {
+      "Icon": "action/images/actionMoviment",
       "Name": "Moviments", 
       "States": [
         {

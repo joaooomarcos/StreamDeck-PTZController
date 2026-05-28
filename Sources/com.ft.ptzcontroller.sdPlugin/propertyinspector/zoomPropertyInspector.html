@@ -14,26 +14,23 @@
 <body>
   <div class="sdpi-wrapper">
 
-    <div class="sdpi-item">
-      <div class="sdpi-item-label">Camera IP</div>
-      <input id="camip" class="sdpi-item-value inspector" type="text" value="http://192.168.0.123" />
+    <div class="sdpi-item" id="select_cam">
+      <div class="sdpi-item-label">Camera</div>
+      <select class="sdpi-item-value select inspector" id="camid">
+        <option value="CAM1">CAM 1</option>
+        <option value="CAM2">CAM 2</option>
+        <option value="CAM3">CAM 3</option>
+        <option value="CAM4">CAM 4</option>
+        <option value="CAM5">CAM 5</option>
+      </select>
     </div>
 
     <div class="sdpi-item" id="select_single">
-      <div class="sdpi-item-label">Select</div>
+      <div class="sdpi-item-label">Zoom</div>
       <select class="sdpi-item-value select inspector" id="moviment">
         <option value="ZoomWide">IN</option>
         <option value="ZoomTele">OUT</option>
       </select>
-    </div>
-
-    <div type="range" class="sdpi-item">
-      <div class="sdpi-item-label">Speed</div>
-      <div class="sdpi-item-value">
-        <span class="clickable" value=0>0</span>
-        <input class="floating-tooltip inspector" id="speed" data-suffix="" type="range" min="0" max="7" value=5>
-        <span class="clickable" value="7">7</span>
-      </div>
     </div>
 
     <div class="sdpi-item">
@@ -42,18 +39,8 @@
     </div>
 
     <div class="sdpi-item">
-      <div class="sdpi-item-label">Auth (User)</div>
-      <input id="authuser" class="sdpi-item-value inspector" type="text" value="YWRtaW4=" />
-    </div>
-
-    <div class="sdpi-item">
-      <div class="sdpi-item-label">Auth (Password)</div>
-      <input id="authpass" class="sdpi-item-value inspector" type="text" value="YWRtaW4=" />
-    </div>
-
-    <div class="sdpi-item">
-      <div class="sdpi-item-label">Save information</div>
-      <button class="sdpi-item-value" id="save" data-localize="Save" onclick="save()">Save</button>
+      <div class="sdpi-item-label">Save</div>
+      <button class="sdpi-item-value" onclick="save()">Save</button>
     </div>
 
   </div>

@@ -1,6 +1,7 @@
 $SD.on('connected', (jsonObj) => connected(jsonObj));
 
 var presetTimer = null;
+var globalSettings = {};
 
 function loadImageAsDataUri(url, callback) {
     var image = new Image();
@@ -13,28 +14,6 @@ function loadImageAsDataUri(url, callback) {
         callback(canvas.toDataURL("image/png"));
     };
     image.src = url;
-}
-
-function doPresetAction(jsn) {
-    if (!jsn.payload.settings || !jsn.payload.settings.camip) {
-        $SD.api.showAlert(jsn.context);
-        return;
-    }
-
-    let url = `${jsn.payload.settings.camip}/cmdparse`;
-    let info = jsn.payload.settings;
-
-    fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        body: `ReqUserName=${info.authuser}&ReqUserPwd=${info.authpass}&CmdData={"Cmd":"ReqPresetCtrl","Content":{"PresetCmd":"Call","PresetID":${info.presetid},"PresetName":""}}`
-    }).then(
-        result => {
-            if (result.status == 200) { $SD.api.showOk(jsn.context); return; }
-            $SD.api.showAlert(jsn.context);
-        },
-        error => { console.log(error); $SD.api.showAlert(jsn.context); }
-    );
 }
 
 function flashSaved(context) {
@@ -53,19 +32,47 @@ function flashSaved(context) {
     setTimeout(() => $SD.api.setImage(context, "", 0), 1500);
 }
 
-function doSetPresetAction(jsn) {
-    if (!jsn.payload.settings || !jsn.payload.settings.camip) {
-        $SD.api.showAlert(jsn.context);
-        return;
-    }
+function getCamSettings(info) {
+    const camid = info.camid || 'CAM1';
+    const cam = globalSettings[camid] || {};
+    return {
+        camip:        cam.camip        || info.camip    || "",
+        authuser:     cam.authuser     || info.authuser || "",
+        authpass:     cam.authpass     || info.authpass || "",
+        speedMoviment: cam.speedMoviment !== undefined ? cam.speedMoviment : (info.speed || 40),
+        speedZoom:    cam.speedZoom    !== undefined ? cam.speedZoom    : (info.speed || 5),
+    };
+}
 
-    let url = `${jsn.payload.settings.camip}/cmdparse`;
-    let info = jsn.payload.settings;
+function doPresetAction(jsn) {
+    const info = jsn.payload.settings;
+    if (!info) { $SD.api.showAlert(jsn.context); return; }
+    const cam = getCamSettings(info);
+    if (!cam.camip) { $SD.api.showAlert(jsn.context); return; }
 
-    fetch(url, {
+    fetch(`${cam.camip}/cmdparse`, {
         method: "POST",
         headers: { "Content-Type": "text/plain" },
-        body: `ReqUserName=${info.authuser}&ReqUserPwd=${info.authpass}&CmdData={"Cmd":"ReqPresetCtrl","Content":{"PresetCmd":"Set","PresetID":${info.presetid},"PresetName":"Preset${info.presetid}"}}`
+        body: `ReqUserName=${cam.authuser}&ReqUserPwd=${cam.authpass}&CmdData={"Cmd":"ReqPresetCtrl","Content":{"PresetCmd":"Call","PresetID":${info.presetid},"PresetName":""}}`
+    }).then(
+        result => {
+            if (result.status == 200) { $SD.api.showOk(jsn.context); return; }
+            $SD.api.showAlert(jsn.context);
+        },
+        error => { console.log(error); $SD.api.showAlert(jsn.context); }
+    );
+}
+
+function doSetPresetAction(jsn) {
+    const info = jsn.payload.settings;
+    if (!info) { $SD.api.showAlert(jsn.context); return; }
+    const cam = getCamSettings(info);
+    if (!cam.camip) { $SD.api.showAlert(jsn.context); return; }
+
+    fetch(`${cam.camip}/cmdparse`, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: `ReqUserName=${cam.authuser}&ReqUserPwd=${cam.authpass}&CmdData={"Cmd":"ReqPresetCtrl","Content":{"PresetCmd":"Set","PresetID":${info.presetid},"PresetName":"Preset${info.presetid}"}}`
     }).then(
         result => {
             if (result.status == 200) { flashSaved(jsn.context); return; }
@@ -78,22 +85,38 @@ function doSetPresetAction(jsn) {
 function connected(jsn) {
     $SD.api.getGlobalSettings($SD.uuid);
 
-    $SD.on('com.ft.ptzcontroller.action.moviments.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
-    $SD.on('com.ft.ptzcontroller.action.moviments.keyDown', (jsonObj) => action.onKeyDown(jsonObj));
-    $SD.on('com.ft.ptzcontroller.action.moviments.sendToPlugin', (jsonObj) => action.onSendToPlugin(jsonObj));
+    $SD.on('didReceiveGlobalSettings', (jsonObj) => {
+        globalSettings = jsonObj.payload.settings || {};
+    });
+
+    $SD.on('com.ft.ptzcontroller.action.config.sendToPlugin', (jsonObj) => action.onConfigSendToPlugin(jsonObj));
+
+    $SD.on('com.ft.ptzcontroller.action.moviments.keyUp',      (jsonObj) => action.onKeyUp(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.moviments.keyDown',    (jsonObj) => action.onKeyDown(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.moviments.sendToPlugin',(jsonObj) => action.onSendToPlugin(jsonObj));
     $SD.on('com.ft.ptzcontroller.action.moviments.willAppear', (jsonObj) => action.onWillAppear(jsonObj));
 
-    $SD.on('com.ft.ptzcontroller.action.zoom.keyUp', (jsonObj) => action.onKeyUp(jsonObj));
-    $SD.on('com.ft.ptzcontroller.action.zoom.keyDown', (jsonObj) => action.onKeyDown(jsonObj));
-    $SD.on('com.ft.ptzcontroller.action.zoom.sendToPlugin', (jsonObj) => action.onSendToPlugin(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.zoom.keyUp',      (jsonObj) => action.onKeyUp(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.zoom.keyDown',    (jsonObj) => action.onKeyDown(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.zoom.sendToPlugin',(jsonObj) => action.onSendToPlugin(jsonObj));
     $SD.on('com.ft.ptzcontroller.action.zoom.willAppear', (jsonObj) => action.onWillAppear(jsonObj));
 
-    $SD.on('com.ft.ptzcontroller.action.preset.keyDown', (jsonObj) => action.onPresetKeyDown(jsonObj));
-    $SD.on('com.ft.ptzcontroller.action.preset.keyUp', (jsonObj) => action.onPresetKeyUp(jsonObj));
-    $SD.on('com.ft.ptzcontroller.action.preset.sendToPlugin', (jsonObj) => action.onSendToPlugin(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.preset.keyDown',    (jsonObj) => action.onPresetKeyDown(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.preset.keyUp',      (jsonObj) => action.onPresetKeyUp(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.preset.sendToPlugin',(jsonObj) => action.onSendToPlugin(jsonObj));
 }
 
 const action = {
+    onConfigSendToPlugin: function (jsn) {
+        if (jsn.payload) {
+            // Save which camera this config button manages as local setting
+            $SD.api.setSettings(jsn.context, { camid: jsn.payload.camid });
+            // Merge updated camera into global settings and persist
+            globalSettings = jsn.payload.cameras || {};
+            $SD.api.setGlobalSettings($SD.uuid, globalSettings);
+        }
+    },
+
     onWillAppear: function (jsn) {
         $SD.api.getGlobalSettings($SD.uuid);
         const moviment = jsn.payload && jsn.payload.settings && jsn.payload.settings.moviment;
@@ -105,20 +128,16 @@ const action = {
     },
 
     onKeyUp: function (jsn) {
-        if (!jsn.payload.settings || !jsn.payload.settings.camip) {
-            $SD.api.showAlert(jsn.context);
-            return;
-        }
+        const info = jsn.payload.settings;
+        if (!info) { $SD.api.showAlert(jsn.context); return; }
+        const cam = getCamSettings(info);
+        if (!cam.camip) { $SD.api.showAlert(jsn.context); return; }
+        const stop = info.stop || "Stop";
 
-        let url = `${jsn.payload.settings.camip}/cmdparse`;
-        let info = jsn.payload.settings;
-        // Zoom uses "ZoomStop" instead of "Stop"
-        let stop = info.stop || "Stop";
-
-        fetch(url, {
+        fetch(`${cam.camip}/cmdparse`, {
             method: "POST",
             headers: { "Content-Type": "text/plain" },
-            body: `ReqUserName=${info.authuser}&ReqUserPwd=${info.authpass}&CmdData={"Cmd":"ReqPtzCtrl","Content":{"PtzCmd":"${stop}","ParamH":${info.speed},"ParamV":${info.speed}}}`
+            body: `ReqUserName=${cam.authuser}&ReqUserPwd=${cam.authpass}&CmdData={"Cmd":"ReqPtzCtrl","Content":{"PtzCmd":"${stop}","ParamH":0,"ParamV":0}}`
         }).then(
             result => {
                 if (result.status == 200) { $SD.api.showOk(jsn.context); return; }
@@ -129,18 +148,17 @@ const action = {
     },
 
     onKeyDown: function (jsn) {
-        if (!jsn.payload.settings || !jsn.payload.settings.camip) {
-            $SD.api.showAlert(jsn.context);
-            return;
-        }
+        const info = jsn.payload.settings;
+        if (!info) { $SD.api.showAlert(jsn.context); return; }
+        const cam = getCamSettings(info);
+        if (!cam.camip) { $SD.api.showAlert(jsn.context); return; }
+        const isZoom = jsn.action === 'com.ft.ptzcontroller.action.zoom';
+        const speed = isZoom ? cam.speedZoom : cam.speedMoviment;
 
-        let url = `${jsn.payload.settings.camip}/cmdparse`;
-        let info = jsn.payload.settings;
-
-        fetch(url, {
+        fetch(`${cam.camip}/cmdparse`, {
             method: "POST",
             headers: { "Content-Type": "text/plain" },
-            body: `ReqUserName=${info.authuser}&ReqUserPwd=${info.authpass}&CmdData={"Cmd":"ReqPtzCtrl","Content":{"PtzCmd":"${info.moviment}","ParamH":${info.speed},"ParamV":${info.speed}}}`
+            body: `ReqUserName=${cam.authuser}&ReqUserPwd=${cam.authpass}&CmdData={"Cmd":"ReqPtzCtrl","Content":{"PtzCmd":"${info.moviment}","ParamH":${speed},"ParamV":${speed}}}`
         }).then(
             result => {
                 if (result.status == 200) { $SD.api.showOk(jsn.context); return; }
@@ -153,7 +171,6 @@ const action = {
     onSendToPlugin: function (jsn) {
         if (jsn.payload) {
             $SD.api.setSettings(jsn.context, jsn.payload);
-            $SD.api.setGlobalSettings($SD.uuid, jsn.payload);
             const moviment = jsn.payload.moviment;
             if (moviment) {
                 loadImageAsDataUri(`action/images/moviment-${moviment}.png`, function (imgUrl) {
@@ -176,6 +193,5 @@ const action = {
             presetTimer = null;
             doPresetAction(jsn);
         }
-        // long press: action already fired by the setTimeout
     },
 };
