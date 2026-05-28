@@ -1,6 +1,6 @@
 $SD.on('connected', (jsonObj) => connected(jsonObj));
 
-var keyTimer = 0;
+var presetTimer = null;
 
 function loadImageAsDataUri(url, callback) {
     var image = new Image();
@@ -37,6 +37,22 @@ function doPresetAction(jsn) {
     );
 }
 
+function flashSaved(context) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 144;
+    canvas.height = 144;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#27AE60";
+    ctx.fillRect(0, 0, 144, 144);
+    ctx.fillStyle = "white";
+    ctx.font = "bold 80px system-ui";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("✓", 72, 72);
+    $SD.api.setImage(context, canvas.toDataURL("image/png"), 0);
+    setTimeout(() => $SD.api.setImage(context, "", 0), 1500);
+}
+
 function doSetPresetAction(jsn) {
     if (!jsn.payload.settings || !jsn.payload.settings.camip) {
         $SD.api.showAlert(jsn.context);
@@ -52,7 +68,7 @@ function doSetPresetAction(jsn) {
         body: `ReqUserName=${info.authuser}&ReqUserPwd=${info.authpass}&CmdData={"Cmd":"ReqPresetCtrl","Content":{"PresetCmd":"Set","PresetID":${info.presetid},"PresetName":"Preset${info.presetid}"}}`
     }).then(
         result => {
-            if (result.status == 200) { $SD.api.showOk(jsn.context); return; }
+            if (result.status == 200) { flashSaved(jsn.context); return; }
             $SD.api.showAlert(jsn.context);
         },
         error => { console.log(error); $SD.api.showAlert(jsn.context); }
@@ -148,14 +164,18 @@ const action = {
     },
 
     onPresetKeyDown: function (jsn) {
-        keyTimer = Date.now();
+        presetTimer = setTimeout(() => {
+            presetTimer = null;
+            doSetPresetAction(jsn);
+        }, 2500);
     },
 
     onPresetKeyUp: function (jsn) {
-        if ((Date.now() - keyTimer) < 2500) {
+        if (presetTimer !== null) {
+            clearTimeout(presetTimer);
+            presetTimer = null;
             doPresetAction(jsn);
-        } else {
-            doSetPresetAction(jsn);
         }
+        // long press: action already fired by the setTimeout
     },
 };
