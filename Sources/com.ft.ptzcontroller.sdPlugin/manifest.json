@@ -1,11 +1,11 @@
 {
   "Actions": [
     {
-      "Icon": "action/images/categoryImage",
+      "Icon": "action/images/config",
       "Name": "PTZ Config",
       "States": [
         {
-          "Image": "action/images/moviment-Default"
+          "Image": "action/images/config"
         }
       ],
       "PropertyInspectorPath": "propertyinspector/settingsPropertyInspector.html",
