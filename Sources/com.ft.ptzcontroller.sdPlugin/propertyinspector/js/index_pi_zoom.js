@@ -9,6 +9,7 @@ $SD.on('connected', (jsn) => {
         document.getElementById("camip").value = settings.camip || "http://192.168.0.123";
         document.getElementById("moviment").value = settings.moviment || "ZoomTele";
         document.getElementById("speed").value = settings.speed || "5";
+        document.getElementById("stop").value = settings.stop || "ZoomStop";
         document.getElementById("authuser").value = settings.authuser || "YWRtaW4=";
         document.getElementById("authpass").value = settings.authpass || "YWRtaW4=";
     }
