@@ -91,6 +91,24 @@ Chama ou grava um preset da câmera.
 
 ---
 
+### PTZ Focus
+
+Controla o foco da câmera. Suporta foco automático (disparo único) e foco manual por proximidade (enquanto pressionado).
+
+| Campo | Descrição |
+|---|---|
+| Camera | Câmera a ser controlada |
+| Mode | `Auto Focus`, `Focus Near` ou `Focus Far` |
+
+**Modos:**
+- **Auto Focus** — pressão única aciona o auto-foco da câmera (`FocusAuto`)
+- **Focus Near** — segure para focar em objetos próximos; solta para parar (`FocusNear` / `FocusStop`)
+- **Focus Far** — segure para focar em objetos distantes; solta para parar (`FocusFar` / `FocusStop`)
+
+O botão exibe o label correspondente ao modo configurado: **AF**, **F+** ou **F−**.
+
+---
+
 ### PTZ Speed
 
 Ajusta a velocidade de movimentação de uma câmera em incrementos configuráveis. Útil para ter botões de `+` e `−` de velocidade no deck.

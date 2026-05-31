@@ -25,6 +25,18 @@
       "UUID": "com.ft.ptzcontroller.action.speed"
     },
     {
+      "Icon": "action/images/actionFocus",
+      "Name": "PTZ Focus",
+      "States": [
+        {
+          "Image": "action/images/moviment-Default"
+        }
+      ],
+      "PropertyInspectorPath": "propertyinspector/focusPropertyInspector.html",
+      "Tooltip": "Auto focus or manual focus near/far",
+      "UUID": "com.ft.ptzcontroller.action.focus"
+    },
+    {
       "Icon": "action/images/actionMoviment",
       "Name": "Moviments", 
       "States": [

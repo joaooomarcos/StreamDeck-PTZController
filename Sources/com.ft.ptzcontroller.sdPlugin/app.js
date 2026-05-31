@@ -35,6 +35,21 @@ function flashSaved(context) {
 
 function numOr(val, def) { const n = parseFloat(val); return isNaN(n) ? def : n; }
 
+function drawTextButton(text, callback) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 144;
+    canvas.height = 144;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#1a1a1a";
+    ctx.fillRect(0, 0, 144, 144);
+    ctx.fillStyle = "white";
+    ctx.font = "bold 56px system-ui";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, 72, 72);
+    callback(canvas.toDataURL("image/png"));
+}
+
 function getCamSettings(info) {
     const camid = info.camid || 'CAM1';
     const cam = globalSettings[camid] || {};
@@ -122,6 +137,11 @@ function connected(jsn) {
     $SD.on('com.ft.ptzcontroller.action.speed.keyDown',     (jsonObj) => action.onSpeedKeyDown(jsonObj));
     $SD.on('com.ft.ptzcontroller.action.speed.sendToPlugin',(jsonObj) => action.onSpeedSendToPlugin(jsonObj));
     $SD.on('com.ft.ptzcontroller.action.speed.willAppear',  (jsonObj) => action.onSpeedWillAppear(jsonObj));
+
+    $SD.on('com.ft.ptzcontroller.action.focus.keyDown',     (jsonObj) => action.onFocusKeyDown(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.focus.keyUp',       (jsonObj) => action.onFocusKeyUp(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.focus.sendToPlugin',(jsonObj) => action.onFocusSendToPlugin(jsonObj));
+    $SD.on('com.ft.ptzcontroller.action.focus.willAppear',  (jsonObj) => action.onFocusWillAppear(jsonObj));
 }
 
 const action = {
@@ -225,6 +245,59 @@ const action = {
         const delta = info.direction === '-' ? -step : step;
         pendingSpeedUpdate = { context: jsn.context, camid, delta };
         $SD.api.getGlobalSettings($SD.uuid);
+    },
+
+    onFocusWillAppear: function (jsn) {
+        const mode = jsn.payload && jsn.payload.settings && jsn.payload.settings.mode || 'auto';
+        const labels = { auto: 'AF', near: 'F+', far: 'F−' };
+        drawTextButton(labels[mode] || 'AF', (img) => $SD.api.setImage(jsn.context, img, 0));
+    },
+
+    onFocusSendToPlugin: function (jsn) {
+        if (jsn.payload) {
+            $SD.api.setSettings(jsn.context, jsn.payload);
+            const labels = { auto: 'AF', near: 'F+', far: 'F−' };
+            drawTextButton(labels[jsn.payload.mode] || 'AF', (img) => $SD.api.setImage(jsn.context, img, 0));
+        }
+    },
+
+    onFocusKeyDown: function (jsn) {
+        const info = jsn.payload.settings;
+        if (!info) { $SD.api.showAlert(jsn.context); return; }
+        const cam = getCamSettings(info);
+        if (!cam.camip) { $SD.api.showAlert(jsn.context); return; }
+        const mode = info.mode || 'auto';
+        const cmd = mode === 'near' ? 'FocusNear' : mode === 'far' ? 'FocusFar' : 'FocusAuto';
+
+        fetch(`${cam.camip}/cmdparse`, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain" },
+            body: `ReqUserName=${cam.authuser}&ReqUserPwd=${cam.authpass}&CmdData={"Cmd":"ReqPtzCtrl","Content":{"PtzCmd":"${cmd}","ParamH":0,"ParamV":0}}`
+        }).then(
+            result => {
+                if (result.status == 200) { if (mode === 'auto') $SD.api.showOk(jsn.context); return; }
+                $SD.api.showAlert(jsn.context);
+            },
+            error => { console.log(error); $SD.api.showAlert(jsn.context); }
+        );
+    },
+
+    onFocusKeyUp: function (jsn) {
+        const info = jsn.payload.settings;
+        if (!info) return;
+        const mode = info.mode || 'auto';
+        if (mode === 'auto') return;
+        const cam = getCamSettings(info);
+        if (!cam.camip) return;
+
+        fetch(`${cam.camip}/cmdparse`, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain" },
+            body: `ReqUserName=${cam.authuser}&ReqUserPwd=${cam.authpass}&CmdData={"Cmd":"ReqPtzCtrl","Content":{"PtzCmd":"FocusStop","ParamH":0,"ParamV":0}}`
+        }).then(
+            result => { if (result.status == 200) $SD.api.showOk(jsn.context); },
+            error => console.log(error)
+        );
     },
 
     onPresetKeyDown: function (jsn) {

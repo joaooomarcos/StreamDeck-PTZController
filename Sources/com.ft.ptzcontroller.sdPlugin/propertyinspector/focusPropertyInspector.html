@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name=viewport
+    content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+  <meta name=apple-mobile-web-app-capable content=yes>
+  <meta name=apple-mobile-web-app-status-bar-style content=black>
+  <title>com.ft.ptzcontroller Property Inspector</title>
+  <link rel="stylesheet" href="css/sdpi.css">
+</head>
+
+<body>
+  <div class="sdpi-wrapper">
+
+    <div class="sdpi-item" id="select_cam">
+      <div class="sdpi-item-label">Camera</div>
+      <select class="sdpi-item-value select inspector" id="camid" onchange="save()">
+        <option value="CAM1">CAM 1</option>
+        <option value="CAM2">CAM 2</option>
+        <option value="CAM3">CAM 3</option>
+        <option value="CAM4">CAM 4</option>
+        <option value="CAM5">CAM 5</option>
+      </select>
+    </div>
+
+    <div class="sdpi-item" id="select_mode">
+      <div class="sdpi-item-label">Mode</div>
+      <select class="sdpi-item-value select inspector" id="mode" onchange="save()">
+        <option value="auto">Auto Focus</option>
+        <option value="near">Focus Near (manual)</option>
+        <option value="far">Focus Far (manual)</option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="sdpi-info-label hidden" style="top: -1000;" value=""></div>
+  <script src="js/common.js"></script>
+  <script src="js/common_pi.js"></script>
+  <script src="js/index_pi_focus.js"></script>
+</body>
+
+</html>
