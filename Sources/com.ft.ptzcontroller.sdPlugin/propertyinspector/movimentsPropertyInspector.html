@@ -16,7 +16,7 @@
 
     <div class="sdpi-item" id="select_cam">
       <div class="sdpi-item-label">Camera</div>
-      <select class="sdpi-item-value select inspector" id="camid">
+      <select class="sdpi-item-value select inspector" id="camid" onchange="save()">
         <option value="CAM1">CAM 1</option>
         <option value="CAM2">CAM 2</option>
         <option value="CAM3">CAM 3</option>
@@ -27,7 +27,7 @@
 
     <div class="sdpi-item" id="select_single">
       <div class="sdpi-item-label">Movement</div>
-      <select class="sdpi-item-value select inspector" id="moviment">
+      <select class="sdpi-item-value select inspector" id="moviment" onchange="save()">
         <option value="Stop">STOP</option>
         <option value="Up">UP</option>
         <option value="Down">DOWN</option>
@@ -38,11 +38,6 @@
         <option value="LeftUp">LEFT-UP</option>
         <option value="LeftDown">LEFT-DOWN</option>
       </select>
-    </div>
-
-    <div class="sdpi-item">
-      <div class="sdpi-item-label">Save</div>
-      <button class="sdpi-item-value" onclick="save()">Save</button>
     </div>
 
   </div>

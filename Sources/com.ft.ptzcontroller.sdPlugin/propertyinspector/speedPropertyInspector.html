@@ -16,7 +16,7 @@
 
     <div class="sdpi-item" id="select_cam">
       <div class="sdpi-item-label">Camera</div>
-      <select class="sdpi-item-value select inspector" id="camid">
+      <select class="sdpi-item-value select inspector" id="camid" onchange="save()">
         <option value="CAM1">CAM 1</option>
         <option value="CAM2">CAM 2</option>
         <option value="CAM3">CAM 3</option>
@@ -27,7 +27,7 @@
 
     <div class="sdpi-item" id="select_direction">
       <div class="sdpi-item-label">Direction</div>
-      <select class="sdpi-item-value select inspector" id="direction">
+      <select class="sdpi-item-value select inspector" id="direction" onchange="save()">
         <option value="+">+ (increase)</option>
         <option value="-">- (decrease)</option>
       </select>
@@ -35,12 +35,7 @@
 
     <div class="sdpi-item">
       <div class="sdpi-item-label">Step</div>
-      <input id="step" class="sdpi-item-value inspector" type="number" min="1" max="20" value="5" />
-    </div>
-
-    <div class="sdpi-item">
-      <div class="sdpi-item-label">Save</div>
-      <button class="sdpi-item-value" onclick="save()">Save</button>
+      <input id="step" class="sdpi-item-value inspector" type="number" min="1" max="20" value="5" onchange="save()" />
     </div>
 
   </div>
