@@ -2,6 +2,7 @@ $SD.on('connected', (jsonObj) => connected(jsonObj));
 
 var presetTimer = null;
 var globalSettings = {};
+var pendingSpeedUpdate = null;
 
 function loadImageAsDataUri(url, callback) {
     var image = new Image();
@@ -32,15 +33,17 @@ function flashSaved(context) {
     setTimeout(() => $SD.api.setImage(context, "", 0), 1500);
 }
 
+function numOr(val, def) { const n = parseFloat(val); return isNaN(n) ? def : n; }
+
 function getCamSettings(info) {
     const camid = info.camid || 'CAM1';
     const cam = globalSettings[camid] || {};
     return {
-        camip:        cam.camip        || info.camip    || "",
-        authuser:     cam.authuser     || info.authuser || "",
-        authpass:     cam.authpass     || info.authpass || "",
-        speedMoviment: cam.speedMoviment !== undefined ? cam.speedMoviment : (info.speed || 40),
-        speedZoom:    cam.speedZoom    !== undefined ? cam.speedZoom    : (info.speed || 5),
+        camip:         cam.camip        || info.camip    || "",
+        authuser:      cam.authuser     || info.authuser || "",
+        authpass:      cam.authpass     || info.authpass || "",
+        speedMoviment: numOr(cam.speedMoviment, numOr(info.speed, 40)),
+        speedZoom:     numOr(cam.speedZoom,     numOr(info.speed, 5)),
     };
 }
 
@@ -87,6 +90,17 @@ function connected(jsn) {
 
     $SD.on('didReceiveGlobalSettings', (jsonObj) => {
         globalSettings = jsonObj.payload.settings || {};
+        if (pendingSpeedUpdate) {
+            const { context, camid, delta } = pendingSpeedUpdate;
+            pendingSpeedUpdate = null;
+            const cam = globalSettings[camid] || {};
+            const cur = numOr(cam.speedMoviment, 40);
+            globalSettings[camid] = Object.assign({}, cam, {
+                speedMoviment: Math.max(0, Math.min(63, cur + delta)),
+            });
+            $SD.api.setGlobalSettings($SD.uuid, globalSettings);
+            $SD.api.showOk(context);
+        }
     });
 
     $SD.on('com.ft.ptzcontroller.action.config.sendToPlugin', (jsonObj) => action.onConfigSendToPlugin(jsonObj));
@@ -209,16 +223,8 @@ const action = {
         const camid = info.camid || 'CAM1';
         const step = parseInt(info.step) || 5;
         const delta = info.direction === '-' ? -step : step;
-        const cam = globalSettings[camid] || {};
-
-        const curMoviment = cam.speedMoviment !== undefined ? cam.speedMoviment : 40;
-        const curZoom     = cam.speedZoom     !== undefined ? cam.speedZoom     : 5;
-
-        globalSettings[camid] = Object.assign({}, cam, {
-            speedMoviment: Math.max(0, Math.min(63, curMoviment + delta)),
-        });
-        $SD.api.setGlobalSettings($SD.uuid, globalSettings);
-        $SD.api.showOk(jsn.context);
+        pendingSpeedUpdate = { context: jsn.context, camid, delta };
+        $SD.api.getGlobalSettings($SD.uuid);
     },
 
     onPresetKeyDown: function (jsn) {
