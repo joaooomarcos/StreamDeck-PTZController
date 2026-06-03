@@ -83,7 +83,7 @@
   "Name": "PTZ Controller", 
   "Icon": "action/images/moviment-Default", 
   "URL": "https://www.elgato.com/en/gaming/stream-deck", 
-  "Version": "1.1.0",
+  "Version": "2.3.1",
   "OS": [
     {
         "Platform": "mac",
