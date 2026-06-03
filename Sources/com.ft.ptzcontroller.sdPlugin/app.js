@@ -3,6 +3,7 @@ $SD.on('connected', (jsonObj) => connected(jsonObj));
 var presetTimer = null;
 var globalSettings = {};
 var pendingSpeedUpdate = null;
+var loggedInCameras = new Set();
 
 function loadImageAsDataUri(url, callback) {
     var image = new Image();
@@ -34,6 +35,20 @@ function flashSaved(context) {
 }
 
 function numOr(val, def) { const n = parseFloat(val); return isNaN(n) ? def : n; }
+
+function doLogin(camid, cam) {
+    if (!cam || !cam.camip) return;
+    if (loggedInCameras.has(camid)) return;
+    loggedInCameras.add(camid);
+    fetch(`${cam.camip}/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body: `{"Cmd":"ReqHttpLogin","Content":{"UserName":"${cam.authuser}","Userpwd":"${cam.authpass}"}}`
+    }).then(
+        r => console.log(`[PTZ] Login ${camid}: ${r.status}`),
+        e => console.error(`[PTZ] Login error ${camid}:`, e)
+    );
+}
 
 function drawTextButton(text, callback) {
     const canvas = document.createElement("canvas");
@@ -105,6 +120,7 @@ function connected(jsn) {
 
     $SD.on('didReceiveGlobalSettings', (jsonObj) => {
         globalSettings = jsonObj.payload.settings || {};
+        Object.keys(globalSettings).forEach(camid => doLogin(camid, globalSettings[camid]));
         if (pendingSpeedUpdate) {
             const { context, camid, delta } = pendingSpeedUpdate;
             pendingSpeedUpdate = null;
@@ -147,11 +163,12 @@ function connected(jsn) {
 const action = {
     onConfigSendToPlugin: function (jsn) {
         if (jsn.payload) {
-            // Save which camera this config button manages as local setting
             $SD.api.setSettings(jsn.context, { camid: jsn.payload.camid });
-            // Merge updated camera into global settings and persist
             globalSettings = jsn.payload.cameras || {};
             $SD.api.setGlobalSettings($SD.uuid, globalSettings);
+            const camid = jsn.payload.camid;
+            loggedInCameras.delete(camid);
+            doLogin(camid, globalSettings[camid]);
         }
     },
 
